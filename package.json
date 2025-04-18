@@ -2,10 +2,11 @@
   "name": "your-project-name",
   "version": "1.0.0",
   "scripts": {
-  
-       "build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css"
+    "postinstall": "chmod +x ./node_modules/.bin/tailwindcss",
+    "build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "tailwindcss": "^3.4.17"
   }
 }
