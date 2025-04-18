@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
   
-     "build": "npx tailwindcss -i ./src/styles.css -o ./dist/styles.css"
+       "build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.17"
