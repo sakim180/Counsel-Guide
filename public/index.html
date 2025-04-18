@@ -81,8 +81,9 @@
             return obj;
           }, {});
         });
-
-        const match = finalJsonData.filter(obj => obj.Name.toLowerCase() === courseName);
+        console.log(finalJsonData)
+        const match = finalJsonData.filter(obj => obj.ShortName.toLowerCase() === courseName);
+        
         resultsContainer.innerHTML = "";
 
         if (match.length > 0) {
@@ -91,18 +92,18 @@
             card.className = "bg-white p-6 rounded-lg shadow-md";
             card.innerHTML = `
               <h3 class="text-xl font-bold text-blue-700">${obj["Course Name"]}</h3>
-              <p class="mt-2 text-gray-700"><strong>Duration:</strong> ${obj["Course Duration"]}</p>
-              <p class="text-gray-700"><strong>Mode:</strong> ${obj["Mode"]}</p>
-              <p class="text-gray-700"><strong>Total Fee:</strong> ₹${obj["Total Course Fees"]}</p>
+              <p class="mt-2 text-gray-700"><strong>Duration:</strong> ${obj["Duration"]}</p>
+              <p class="text-gray-700"><strong>Mode:</strong> ${obj["Mode of Class"]}</p>
+              <p class="text-gray-700"><strong>Total Fee:</strong> ₹${obj["Total Fees (INR)"]}</p>
               <ul class="list-disc list-inside text-gray-600 mt-2">
-                <li><strong>Admission:</strong> ₹${obj["Admission Fee"]}</li>
-                <li><strong>Registration:</strong> ₹${obj["Registration Fee"]}</li>
-                <li><strong>Exam:</strong> ₹${obj["Exam Fee"]}</li>
-                <li><strong>Semester:</strong> ₹${obj["Semester Fee"]}</li>
+                <li><strong>Admission:</strong> ₹${obj["At the Time of Admission"]}</li>
+                <li><strong>Registration:</strong> ₹${obj["Registration Fees"]}</li>
+                <li><strong>Exam:</strong> ₹${obj["Exam Fees (Per SEM)"]}</li>
+                <li><strong>Semester:</strong> ₹${obj["Total Semester"]}</li>
                 <li><strong>Seat Booking:</strong> ₹${obj["Seat Booking Fees"]}</li>
               </ul>
               <p class="mt-2 text-gray-700"><strong>Benefits:</strong> ${obj["Benefits"]}</p>
-              <p class="text-gray-700"><strong>Career Opportunities:</strong> ${obj["Career Opportunities"]}</p>
+              <p class="text-gray-700"><strong>Career Opportunities:</strong> ${obj["Career Options"]}</p>
             `;
             resultsContainer.appendChild(card);
           });
