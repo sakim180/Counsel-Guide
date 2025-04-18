@@ -1,0 +1,88 @@
+async function searchCourse() {
+    const courseName = document.getElementById("courseInput").value.toLowerCase();
+    const sheetID = "1CdVWwKd1s8ZVTYuvcVUfjprx9x6-Dzlki1Z8ERZav7E";
+    const sheetName = "Sheet1";
+    const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+  
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const match = data.find(row => row["Course Name"].toLowerCase() === courseName);
+  
+      if (match) {
+        document.getElementById("resultBox").innerHTML = `
+          <h3>${match["Course Name"]}</h3>
+          <p><strong>Duration:</strong> ${match["Duration"]}</p>
+          <p><strong>Mode:</strong> ${match["Mode"]}</p>
+          <p><strong>Total Fee:</strong> ₹${match["Total Fee"]} 
+            (Admission: ₹${match["Admission Fee"]}, Registration: ₹${match["Registration Fee"]}, 
+            Exam: ₹${match["Exam Fee"]}, Semester: ₹${match["Semester Fee"]}, Seat Booking: ₹${match["Seat Booking"]})</p>
+          <p><strong>Benefits:</strong> ${match["Benefits"]}</p>
+          <p><strong>Career Opportunities:</strong> ${match["Career Opportunities"]}</p>
+        `;
+        document.getElementById("resultBox").style.display = "block";
+        document.getElementById("ctaBox").style.display = "block";
+        document.getElementById("closing").style.display = "block";
+      } else {
+        alert("Course not found. Please check the name and try again.");
+      }
+  
+    } catch (error) {
+      alert("Error fetching course data.");
+      console.error(error);
+    }
+  }
+  
+////jhhgyugyug
+async function searchCourse() {
+    const courseName = document.getElementById("courseInput").value.toLowerCase();
+    const sheetID = "YOUR_SHEET_ID_HERE"; // Replace with your Sheet ID
+    const sheetName = "Sheet1"; // Change if needed
+
+    //const url = https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}?key=YOUR_API_KEY;
+    const ul="https://docs.google.com/spreadsheets/d/1CdVWwKd1s8ZVTYuvcVUfjprx9x6-Dzlki1Z8ERZav7E/edit?usp=sharing"
+
+    try {
+      const res = await fetch(ul);
+      const data = await res.json();
+      const rows = data.values;
+      const headers = rows[0];
+      const match = rows.find(row => row[0].toLowerCase() === courseName);
+
+      if (match) {
+        const details = headers.reduce((acc, key, i) => {
+          acc[key] = match[i];
+          return acc;
+        }, {});
+
+        document.getElementById("resultBox").innerHTML = `
+          <h3>${details["Course Name"]}</h3>
+          <p><strong>Duration:</strong> ${details["Duration"]}</p>
+          <p><strong>Mode:</strong> ${details["Mode"]}</p>
+          <p><strong>Total Fee:</strong> ₹${details["Total Fee"]} 
+            (Admission: ₹${details["Admission Fee"]}, Registration: ₹${details["Registration Fee"]}, 
+            Exam: ₹${details["Exam Fee"]}, Semester: ₹${details["Semester Fee"]}, Seat Booking: ₹${details["Seat Booking"]})</p>
+          <p><strong>Benefits:</strong> ${details["Benefits"]}</p>
+          <p><strong>Career Opportunities:</strong> ${details["Career Opportunities"]}</p>
+        `;
+        document.getElementById("resultBox").style.display = "block";
+        document.getElementById("ctaBox").style.display = "block";
+        document.getElementById("closing").style.display = "block";
+      } else {
+        alert("Course not found. Please check the name and try again.");
+      }
+
+    } catch (error) {
+      alert("Error fetching course data.");
+      console.error(error);
+    }
+  }
+
+
+
+
+
+
+
+
+

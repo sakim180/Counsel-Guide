@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Oxford Global Academy</title>
+  <link href="dist/styles.css" rel="stylesheet">
+  
+</head>
+<body class="bg-gray-100 font-sans p-6">
+
+  <div class="max-w-3xl mx-auto space-y-6">
+
+    <!-- Search Box -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold text-gray-800">Search for a Course</h3>
+      <input 
+        type="text" 
+        id="courseInput" 
+        placeholder="Enter course name like 'Digital Marketing'"
+        class="mt-4 w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button 
+        onclick="searchCourse()"
+        class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-200"
+      >Search</button>
+    </div>
+
+    <!-- Intro Box -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold text-gray-800">Hello! I'm Alex from Oxford Global Academy.</h2>
+      <p class="mt-2 text-gray-600">We're passionate about helping students achieve their academic and professional goals. Can I tell you a bit about what we offer?</p>
+    </div>
+
+    <!-- Loader -->
+    <div id="resultsContainer" class="space-y-4 hidden"></div>
+
+    <!-- CTA Box -->
+    <div id="ctaBox" class="bg-white p-6 rounded-lg shadow-md hidden">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Ready to start?</h3>
+      <div class="space-x-4">
+        <button 
+          onclick="alert('Redirecting to application page...')" 
+          class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg"
+        >Apply Now</button>
+        <button 
+          onclick="alert('Counseling session booking coming soon')" 
+          class="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg"
+        >Book Counseling</button>
+      </div>
+    </div>
+
+    <!-- Closing Message -->
+    <div id="closing" class="bg-white p-6 rounded-lg shadow-md text-gray-600 hidden">
+      <p>Thanks for your interest! We're here to support you at every step. Feel free to reach out if you have more questions or need personal guidance.</p>
+    </div>
+  </div>
+
+  <script>
+    async function searchCourse() {
+      const courseName = document.getElementById("courseInput").value.toLowerCase();
+      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIm-GyjSyWSIGXrdKNa_VwpC7ZAhtFrD7znxgbtruGBihk4EQs7ep7YzAZC6lMqw/pub?output=csv';
+
+      const resultsContainer = document.getElementById("resultsContainer");
+      resultsContainer.innerHTML = `
+        <div class="bg-white p-4 rounded-lg shadow text-center text-gray-500">
+          Loading courses...
+        </div>`;
+      resultsContainer.classList.remove("hidden");
+
+      try {
+        const response = await fetch(url);
+        const csvText = await response.text();
+
+        const rows = csvText.trim().split('\n');
+        const headers = rows[0].split(',');
+
+        const finalJsonData = rows.slice(1).map(row => {
+          const values = row.split(',');
+          return headers.reduce((obj, header, index) => {
+            obj[header.trim()] = values[index]?.trim() || '';
+            return obj;
+          }, {});
+        });
+
+        const match = finalJsonData.filter(obj => obj.Name.toLowerCase() === courseName);
+        resultsContainer.innerHTML = "";
+
+        if (match.length > 0) {
+          match.forEach(obj => {
+            const card = document.createElement("div");
+            card.className = "bg-white p-6 rounded-lg shadow-md";
+            card.innerHTML = `
+              <h3 class="text-xl font-bold text-blue-700">${obj["Course Name"]}</h3>
+              <p class="mt-2 text-gray-700"><strong>Duration:</strong> ${obj["Course Duration"]}</p>
+              <p class="text-gray-700"><strong>Mode:</strong> ${obj["Mode"]}</p>
+              <p class="text-gray-700"><strong>Total Fee:</strong> ₹${obj["Total Course Fees"]}</p>
+              <ul class="list-disc list-inside text-gray-600 mt-2">
+                <li><strong>Admission:</strong> ₹${obj["Admission Fee"]}</li>
+                <li><strong>Registration:</strong> ₹${obj["Registration Fee"]}</li>
+                <li><strong>Exam:</strong> ₹${obj["Exam Fee"]}</li>
+                <li><strong>Semester:</strong> ₹${obj["Semester Fee"]}</li>
+                <li><strong>Seat Booking:</strong> ₹${obj["Seat Booking Fees"]}</li>
+              </ul>
+              <p class="mt-2 text-gray-700"><strong>Benefits:</strong> ${obj["Benefits"]}</p>
+              <p class="text-gray-700"><strong>Career Opportunities:</strong> ${obj["Career Opportunities"]}</p>
+            `;
+            resultsContainer.appendChild(card);
+          });
+
+          document.getElementById("ctaBox").classList.remove("hidden");
+          document.getElementById("closing").classList.remove("hidden");
+
+        } else {
+          resultsContainer.innerHTML = `
+            <div class="bg-white p-4 rounded-lg shadow text-red-500 text-center">
+              Course not found. Please try another name.
+            </div>`;
+          document.getElementById("ctaBox").classList.add("hidden");
+          document.getElementById("closing").classList.add("hidden");
+        }
+
+      } catch (error) {
+        resultsContainer.innerHTML = `
+          <div class="bg-red-100 p-4 rounded-lg shadow text-red-700 text-center">
+            Something went wrong while fetching data. Please try again later.
+          </div>`;
+        console.error(error);
+      }
+    }
+
+    // Enter key triggers search
+    document.getElementById("courseInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchCourse();
+      }
+    });
+  </script>
+</body>
+</html>
